@@ -24,15 +24,15 @@ import IndexInscripciones from 'pages/inscripciones';
 // import PrivateRoute from 'components/PrivateRoute';
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:5000' // link de la base de datos
+  uri: 'http://localhost:4002/graphql' // link de la base de datos
 });
 
 const authLink = setContext((_, { headers }) => {
 
   //traer el token de autenticacion desde el almacenamiento local si excitste
   const token = JSON.parse(localStorage.getItem('token'));
-  
-  //devolver los headers al contexto para que lo pueda lñeer
+
+  //devolver los headers al contexto para que lo pueda leer
   return {
     headers: {
       ...headers,
@@ -43,6 +43,7 @@ const authLink = setContext((_, { headers }) => {
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
+  link: authLink.concat(httpLink),
   
 });
 

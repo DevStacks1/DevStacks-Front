@@ -34,8 +34,8 @@ const PrivateLayout = () => {
     }
   }, [dataMutation, setToken, loadingAuth, navigate]);
 
-  // if (loadingMutation || loadingAuth) 
-  // return <div><ReactLoading className='flex flex-col content-center' type={"spokes"} color={"#0080FF"} height={'20%'} width={'20%'} /></div>; 
+  if (loadingMutation || loadingAuth) 
+  return <div><ReactLoading className='flex flex-col content-center' type={"spokes"} color={"#0080FF"} height={'20%'} width={'20%'} /></div>; 
 
   return (
     <div className='flex flex-col md:flex-row flex-no-wrap h-screen'>
