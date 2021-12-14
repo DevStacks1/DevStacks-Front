@@ -34,7 +34,8 @@ const Register = () => {
 
   return (
     <div className='flex flex-col h-full w-full items-center justify-center'>
-      <h1 className='text-3xl font-bold my-4'>Regístrate</h1>
+      <h1 className='text-5xl font-bold my-4 text-slate-700'>¡Regístrate!</h1>
+      <h1 className='text-3xl font-bold my-4 text-slate-500'>Es fácil y rápido</h1>
       <form className='flex flex-col' onSubmit={submitForm} onChange={updateFormData} ref={form}>
         <div className='grid grid-cols-2 gap-5'>
           <Input label='Nombre:' name='nombre' type='text' required />

@@ -8,15 +8,14 @@ const SidebarLinks = () => {
     <ul className='mt-12'>
       <SidebarRoute to='' title='Inicio' icon='fas fa-home' />
       <PrivateComponent roleList={['ADMINISTRADOR']}>
-        <SidebarRoute to='/usuarios' title='Usuarios' icon='fas fa-user' />
+        <SidebarRoute to='/usuarios' title='Usuarios' icon='fas fa-user-friends' />
       </PrivateComponent>
-      <SidebarRoute to='/proyectos' title='Proyectos' icon='fas fa-smile-wink' />
+      <SidebarRoute to='/proyectos' title='Proyectos' icon='fas fa-tasks' />
       <PrivateComponent roleList={['ADMINISTRADOR', 'LIDER']}>
-        <SidebarRoute to='/inscripciones' title='Aprobacion Inscripciones' icon='fas fa-user' />
+        <SidebarRoute to='/inscripciones' title='Aprobacion Inscripciones' icon='fas fa-scroll' />
       </PrivateComponent>
-      <SidebarRoute to='/page2' title='Pagina2' icon='fas fa-smile-wink' />
-      <SidebarRoute to='/category1' title='Catego 1' icon='fab fa-amazon' />
-      <SidebarRoute to='/category1/page1' title='Test' icon='fas fa-car' />
+      <SidebarRoute to='/category1' title='Perfil' icon='fas fa-user' />
+      
       <Logout />
     </ul>
   );
@@ -44,7 +43,7 @@ const Logo = () => {
   return (
     <div className='py-3 w-full flex flex-col items-center justify-center'>
       <img src='logo.png' alt='Logo' className='h-16' />
-      <span className='my-2 text-xl font-bold text-center'>Título de Mi Aplicación</span>
+      <span className='my-2 text-xl font-bold text-center'>Administración de proyectos</span>
     </div>
   );
 };

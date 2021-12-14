@@ -8,6 +8,7 @@ import { REFRESH_TOKEN } from 'graphql/auth/mutations';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import PrivateRoute from 'components/PrivateRoute';
+import ReactLoading from 'react-loading';
 
 const PrivateLayout = () => {
   const navigate = useNavigate();
@@ -33,7 +34,8 @@ const PrivateLayout = () => {
     }
   }, [dataMutation, setToken, loadingAuth, navigate]);
 
-  if (loadingMutation || loadingAuth) return <div>Cargando...</div>; 
+  // if (loadingMutation || loadingAuth) 
+  // return <div><ReactLoading className='flex flex-col content-center' type={"spokes"} color={"#0080FF"} height={'20%'} width={'20%'} /></div>; 
 
   return (
     <div className='flex flex-col md:flex-row flex-no-wrap h-screen'>
