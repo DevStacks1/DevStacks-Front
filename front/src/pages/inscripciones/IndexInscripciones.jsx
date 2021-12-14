@@ -14,27 +14,24 @@ import {
 const IndexInscripciones = () => {
   const { data, loading, error, refetch } = useQuery(GET_INSCRIPCIONES);
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
   if (loading) return <div>Loading...</div>;
   return (
-    <PrivateRoute roleList={['ADMINISTRADOR', 'LIDER']}>
+    <PrivateRoute roleList={['ADMINISTRATOR', 'LEADER']}>
       <div className='p-10'>
-        <div>Pagina de inscripciones</div>
+        <div>INSCRIPTIONS</div>
         <div className='my-4'>
           <AccordionInscripcion
             titulo='Inscripciones aprobadas'
-            data={data.Inscripciones.filter((el) => el.estado === 'ACEPTADO')}
+            data={data.Inscriptions.filter((el) => el.Inscription_State === 'ACCEPTED')}
           />
           <AccordionInscripcion
             titulo='Inscripciones pendientes'
-            data={data.Inscripciones.filter((el) => el.estado === 'PENDIENTE')}
+            data={data.Inscriptions.filter((el) => el.Inscription_State === 'PENDING')}
             refetch={refetch}
           />
           <AccordionInscripcion
             titulo='Inscripciones rechazadas'
-            data={data.Inscripciones.filter((el) => el.estado === 'RECHAZADO')}
+            data={data.Inscriptions.filter((el) => el.Inscription_State === 'REJECTED')}
           />
         </div>
       </div>

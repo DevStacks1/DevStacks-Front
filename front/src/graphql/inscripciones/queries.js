@@ -4,16 +4,16 @@ const GET_INSCRIPCIONES = gql`
   query Inscripciones {
     Inscripciones {
       _id
-      estado
-      estudiante {
+      Inscription_State
+      Student {
         _id
-        nombre
-        apellido
-        correo
+        Name
+        Lastname
+        Email
       }
-      proyecto {
+      Proyect {
         _id
-        nombre
+        Name
         lider {
           _id
         }

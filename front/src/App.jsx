@@ -16,7 +16,7 @@ import jwt_decode from 'jwt-decode';
 import 'styles/globals.css';
 import 'styles/tabla.css';
 import NuevoProyecto from 'pages/proyectos/NuevoProyecto';
-import IndexInscripciones from 'pages/inscripciones';
+import IndexInscripciones from 'pages/inscripciones/IndexInscripciones';
 
 // import PrivateRoute from 'components/PrivateRoute';
 
