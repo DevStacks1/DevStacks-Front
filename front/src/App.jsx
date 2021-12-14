@@ -24,7 +24,7 @@ import IndexInscripciones from 'pages/inscripciones';
 // import PrivateRoute from 'components/PrivateRoute';
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:4002/graphql' // link de la base de datos
+  uri: 'https://dev-stack2.herokuapp.com/graphql' // link de la base de datos
 });
 
 const authLink = setContext((_, { headers }) => {
