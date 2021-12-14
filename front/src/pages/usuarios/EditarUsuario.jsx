@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { EDITAR_USUARIO } from 'graphql/usuarios/mutations';
 import DropDown from 'components/Dropdown';
 import { Enum_EstadoUsuario } from 'utils/enums';
+import ReactLoading from 'react-loading';
 
 const EditarUsuario = () => {
   const { form, formData, updateFormData } = useFormData(null);

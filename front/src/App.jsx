@@ -11,7 +11,7 @@ import AuthLayout from 'layouts/AuthLayout';
 import Register from 'pages/auth/register';
 import Login from 'pages/auth/login';
 import { AuthContext } from 'context/authContext';
-import IndexProyectos from 'pages/proyectos/Index';
+import IndexProyectos from 'pages/proyectos/IndexProyectos';
 import jwt_decode from 'jwt-decode';
 import 'styles/globals.css';
 import 'styles/tabla.css';
@@ -49,7 +49,6 @@ function App() {
   const [authToken, setAuthToken] = useState('');
 
   const setToken = (token) => {
-    console.log('set token', token);
     setAuthToken(token);
     if (token) {
       localStorage.setItem('token', JSON.stringify(token));
@@ -63,11 +62,11 @@ function App() {
       const decoded = jwt_decode(authToken);
       setUserData({
         _id: decoded._id,
-        nombre: decoded.nombre,
-        apellido: decoded.apellido,
-        identificacion: decoded.identificacion,
-        correo: decoded.correo,
-        rol: decoded.rol,
+        Name: decoded.Name,
+        Lastname: decoded.Lastname,
+        Identification: decoded.Identification,
+        Email: decoded.Email,
+        Role: decoded.Role,
       });
     }
   }, [authToken]);

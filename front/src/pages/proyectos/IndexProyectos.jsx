@@ -25,22 +25,22 @@ const IndexProyectos = () => {
     console.log('datos proyecto', queryData);
   }, [queryData]);
 
-  if (loading) return <div>Cargando...</div>;
+  if (loading) return <div>Loading...</div>;
 
   if (queryData.Proyectos) {
     return (
       <div className='p-10 flex flex-col'>
         <div className='flex w-full items-center justify-center'>
-          <h1 className='text-2xl font-bold text-gray-900'>Lista de Proyectos</h1>
+          <h1 className='text-2xl font-bold text-gray-900'>PROJECT LIST</h1>
         </div>
-        <PrivateComponent roleList={['ADMINISTRADOR', 'LIDER']}>
+        <PrivateComponent roleList={['ADMINISTRATOR', 'LEADER']}>
           <div className='my-2 self-end'>
             <button className='bg-indigo-500 text-gray-50 p-2 rounded-lg shadow-lg hover:bg-indigo-400'>
-              <Link to='/proyectos/nuevo'>Crear nuevo proyecto</Link>
+              <Link to='/proyectos/nuevo'>Create new project</Link>
             </button>
           </div>
         </PrivateComponent>
-        {queryData.Proyectos.map((proyecto) => {
+        {queryData.Projects.map((proyecto) => {
           return <AccordionProyecto proyecto={proyecto} />;
         })}
       </div>
