@@ -5,17 +5,17 @@ const REGISTRO = gql`
     $Name: String!
     $Lastname: String!
     $Identification: String!
-    $Password: String!
     $Email: String!
     $Role: Enum_Role!
+    $Password: String!
   ) {
-    CreateUser(
-      nombre: $Name
-      apellido: $Lastname
-      identificacion: $Identification
-      correo: $Email
-      rol: $Role
-      password: $Password
+    registro(
+      Name: $Name
+      Lastname: $Lastname
+      Identification: $Identification
+      Email: $Email
+      Role: $Role
+      Password: $Password
     ) {
       token
       error
@@ -24,12 +24,8 @@ const REGISTRO = gql`
 `;
 
 const LOGIN = gql`
-  mutation Login(
-    $Email: String!, 
-    $Password: String!) {
-    login(
-      correo: $Email, 
-      password: $Password) {
+  mutation Login ($Email: String!, $Password: String!) {
+    login(Email: $Email, Password: $Password) {
       token
       error
     }
