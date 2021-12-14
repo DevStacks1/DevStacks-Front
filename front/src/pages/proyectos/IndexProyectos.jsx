@@ -18,16 +18,13 @@ import {
   AccordionDetailsStyled,
 } from 'components/Accordion';
 
+
 const IndexProyectos = () => {
   const { data: queryData, loading, error } = useQuery(PROYECTOS);
 
-  useEffect(() => {
-    console.log('datos proyecto', queryData);
-  }, [queryData]);
-
   if (loading) return <div>Loading...</div>;
 
-  if (queryData.Proyectos) {
+  if (queryData) {
     return (
       <div className='p-10 flex flex-col'>
         <div className='flex w-full items-center justify-center'>
@@ -40,14 +37,13 @@ const IndexProyectos = () => {
             </button>
           </div>
         </PrivateComponent>
-        {queryData.Projects.map((proyecto) => {
-          return <AccordionProyecto proyecto={proyecto} />;
-        })}
+        {queryData ? (queryData.Projects.map((proyect) => {
+          return <AccordionProyecto proyecto={proyect} key={proyect._id} />;
+        })) : (<div>No hay datos</div>)}
       </div>
     );
   }
-
-  return <></>;
+  return <>No hay datos</>;
 };
 
 const AccordionProyecto = ({ proyecto }) => {
@@ -58,12 +54,12 @@ const AccordionProyecto = ({ proyecto }) => {
         <AccordionSummaryStyled expandIcon={<i className='fas fa-chevron-down' />}>
           <div className='flex w-full justify-between'>
             <div className='uppercase font-bold text-gray-100 '>
-              {proyecto.nombre} - {proyecto.estado}
+              {proyecto.NameProject} - {proyecto.ProjectState}
             </div>
           </div>
         </AccordionSummaryStyled>
         <AccordionDetailsStyled>
-          <PrivateComponent roleList={['ADMINISTRADOR']}>
+          <PrivateComponent roleList={['ADMINISTRATOR']}>
             <i
               className='mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400'
               onClick={() => {
@@ -71,17 +67,17 @@ const AccordionProyecto = ({ proyecto }) => {
               }}
             />
           </PrivateComponent>
-          <PrivateComponent roleList={['ESTUDIANTE']}>
+          <PrivateComponent roleList={['STUDENT']}>
             <InscripcionProyecto
               idProyecto={proyecto._id}
-              estado={proyecto.estado}
-              inscripciones={proyecto.inscripciones}
+              estado={proyecto.ProjectState}
+              inscripciones={proyecto.Inscriptions}
             />
           </PrivateComponent>
-          <div>Liderado Por: {proyecto.lider.correo}</div>
+          <div>Liderado por: {proyecto.Leader.Email}</div>
           <div className='flex'>
-            {proyecto.objetivos.map((objetivo) => {
-              return <Objetivo tipo={objetivo.tipo} descripcion={objetivo.descripcion} />;
+            {proyecto.Objectives.map((objetivo) => {
+              return <Objetivo tipo={objetivo.Type} descripcion={objetivo.Description} />;
             })}
           </div>
         </AccordionDetailsStyled>
@@ -107,7 +103,7 @@ const FormEditProyecto = ({ _id }) => {
     editarProyecto({
       variables: {
         _id,
-        campos: formData,
+        Fields: formData,
       },
     });
   };
@@ -125,8 +121,8 @@ const FormEditProyecto = ({ _id }) => {
         onSubmit={submitForm}
         className='flex flex-col items-center'
       >
-        <DropDown label='Estado del Proyecto' name='estado' options={Enum_EstadoProyecto} />
-        <ButtonLoading disabled={false} loading={loading} text='Confirmar' />
+        <DropDown label='Estado del Proyecto' name='State' options={Enum_EstadoProyecto} />
+        <ButtonLoading disabled={false} loading={loading} text='Confirm' />
       </form>
     </div>
   );
@@ -137,8 +133,8 @@ const Objetivo = ({ tipo, descripcion }) => {
     <div className='mx-5 my-4 bg-gray-50 p-8 rounded-lg flex flex-col items-center justify-center shadow-xl'>
       <div className='text-lg font-bold'>{tipo}</div>
       <div>{descripcion}</div>
-      <PrivateComponent roleList={['ADMINISTRADOR']}>
-        <div>Editar</div>
+      <PrivateComponent roleList={['ADMINISTRATOR']}>
+        <div>Edit</div>
       </PrivateComponent>
     </div>
   );
@@ -153,7 +149,7 @@ const InscripcionProyecto = ({ idProyecto, estado, inscripciones }) => {
     if (userData && inscripciones) {
       const flt = inscripciones.filter((el) => el.estudiante._id === userData._id);
       if (flt.length > 0) {
-        setEstadoInscripcion(flt[0].estado);
+        setEstadoInscripcion(flt[0].State);
       }
     }
   }, [userData, inscripciones]);
@@ -166,7 +162,7 @@ const InscripcionProyecto = ({ idProyecto, estado, inscripciones }) => {
   }, [data]);
 
   const confirmarInscripcion = () => {
-    crearInscripcion({ variables: { proyecto: idProyecto, estudiante: userData._id } });
+    crearInscripcion({ variables: { Project: idProyecto, Student: userData._id } });
   };
 
   return (
