@@ -1,10 +1,10 @@
 import { gql } from '@apollo/client';
 
 const EDITAR_PROYECTO = gql`
-  mutation UpdateProject($_idProject: String!, $Fields: ProjectfFields!) {
-    UpdateProject(_idProject: $_idProject, Fields: $Fields) {
+  mutation UpdateProject($_id: String!, $Fields: ProjectFields!) {
+    UpdateProject(idProject: $_id, Fields: $Fields) {
       _id
-      ProyectState
+      ProjectState
     }
   }
 `;

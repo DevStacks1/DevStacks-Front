@@ -66,12 +66,9 @@ const AccordionProyecto = ({ proyecto }) => {
         </AccordionSummaryStyled>
         <AccordionDetailsStyled>
           <PrivateComponent roleList={['ADMINISTRATOR']}>
-            <i
-              className='mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400'
-              onClick={() => {
-                setShowDialog(true);
-              }}
-            />
+            <div onClick={() => {setShowDialog(true);}}>
+              <i className='mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400'/>
+            </div>
           </PrivateComponent>
           <PrivateComponent roleList={['STUDENT']}>
             <InscripcionProyecto
@@ -88,13 +85,9 @@ const AccordionProyecto = ({ proyecto }) => {
           </div>
         </AccordionDetailsStyled>
       </AccordionStyled>
-      <Dialog
-        open={showDialog}
-        onClose={() => {
-          setShowDialog(false);
-        }}
-      >
-        <FormEditProyecto _id={proyecto._id} />
+      <Dialog open={showDialog} 
+        onClose={() => {setShowDialog(false);}}>
+          <FormEditProyecto _id={proyecto._id} />
       </Dialog>
     </>
   );

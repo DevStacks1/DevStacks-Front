@@ -131,13 +131,13 @@ const FormObjetivo = ({ id }) => {
   return (
     <div className='flex items-center'>
       <Input
-        name={`nested||objetivos||${id}||Description`}
+        name={`objetivos||${id}||Description`}
         label='Descripción'
         type='text'
         required={true}
       />
       <DropDown
-        name={`nested||objetivos||${id}||Type`}
+        name={`objetivos||${id}||Type`}
         options={Enum_TipoObjetivo}
         label='Tipo de Objetivo'
         required={true}
