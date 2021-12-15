@@ -20,7 +20,7 @@ const IndexUsuarios = () => {
         <PrivateRoute roleList={['ADMINISTRATOR']}>
         <div>
             Datos Usuarios:
-            <table className='tabla'>
+            <table className='tabla w-screen overflow-hidden'>
             <thead>
                 <tr>
                 <th>Name</th>
@@ -28,7 +28,7 @@ const IndexUsuarios = () => {
                 <th>Email</th>
                 <th>Identification</th>
                 <th>Role</th>
-                <th>Srate</th>
+                <th>State</th>
                 <th>Edit</th>
                 </tr>
             </thead>
@@ -46,8 +46,10 @@ const IndexUsuarios = () => {
                         <td>{Enum_EstadoUsuario[campo.State]}</td>
                         <td>
                             <Link to={`/usuarios/editar/${campo._id}`}>
-                            <i className='fas fa-pen text-yellow-600 hover:text-yellow-400 cursor-pointer' />
+                                <i className='fas fa-pen' />
+                                edit
                             </Link>
+
                         </td>
                         </tr>
                     );

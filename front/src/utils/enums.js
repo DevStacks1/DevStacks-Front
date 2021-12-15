@@ -1,5 +1,5 @@
 const Enum_Rol = {
-  ADMINISTRATOR : 'Admministrator',
+  ADMINISTRATOR : 'Administrator',
   STUDENT: 'Student',
   LEADER: 'Leader',
 };
