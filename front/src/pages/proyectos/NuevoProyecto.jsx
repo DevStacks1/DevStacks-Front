@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import Input from 'components/Input';
 import { GET_USUARIOS } from 'graphql/usuarios/queries';
-import { Link, Navigate } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 import DropDown from 'components/Dropdown';
-import ButtonLoading from 'components/ButtonLoading';
 import useFormData from 'hooks/useFormData';
 import { Enum_TipoObjetivo } from 'utils/enums';
 import { nanoid } from 'nanoid';
@@ -12,6 +11,7 @@ import { ObjContext } from 'context/objContext';
 import { useObj } from 'context/objContext';
 import { CREAR_PROYECTO } from 'graphql/proyectos/mutations';
 import { toast } from 'react-toastify';
+import ReactLoading from 'react-loading';
 
 const NuevoProyecto = () => {
   const { form, formData, updateFormData } = useFormData();
@@ -32,8 +32,10 @@ const NuevoProyecto = () => {
         lu[elemento._id] = elemento.Email;
       });
       setListaUsuarios(lu);
+    }else if(error){
+      toast.error("Error cargando usuarios")
     }
-  }, [data]);
+  }, [data, error]);
 
   useEffect(() => {
     if (mutationData){
@@ -71,7 +73,11 @@ const NuevoProyecto = () => {
         <Input name='Final_Date' label='Fecha de Fin' required={true} type='date' />
         <DropDown label='Líder' options={listaUsuarios} name='Leader' required={true} />
         <Objetivos />
-        <ButtonLoading text='Create project' loading={false} disabled={false} />
+        <button disabled={Object.keys(formData).length === 0} type='submit'
+          className='bg-indigo-700 text-white font-bold text-lg py-3 px-6 
+          rounded-xl hover:bg-indigo-500 shadow-md my-2 disabled:opacity-50 disabled:bg-gray-700'>
+            {mutationLoading ? <ReactLoading type='spin' height={30} width={30} /> : <div> Create project </div> }
+        </button>
       </form>
     </div>
   );

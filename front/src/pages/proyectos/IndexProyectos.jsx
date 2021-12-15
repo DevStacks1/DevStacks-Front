@@ -17,13 +17,19 @@ import {
   AccordionSummaryStyled,
   AccordionDetailsStyled,
 } from 'components/Accordion';
-
+import ReactLoading from 'react-loading';
 
 const IndexProyectos = () => {
   const { data: queryData, loading, error } = useQuery(PROYECTOS);
 
-  if (loading) return <div>Loading...</div>;
+  useEffect(() => {
+    if (error){
+      toast.error ("Error cargando proyectos")
+    }
+  }, [error])
 
+  if (loading) return <div>Loading...</div>;
+  
   if (queryData) {
     return (
       <div className='p-10 flex flex-col'>
@@ -110,19 +116,24 @@ const FormEditProyecto = ({ _id }) => {
 
   useEffect(() => {
     console.log('data mutation', dataMutation);
-  }, [dataMutation]);
+    if (dataMutation){
+      toast.success("Proyecto editado con exito");
+    }else if (error){
+      toast.error("Error editando proyecto");
+    }
+  }, [dataMutation, error]);
 
   return (
     <div className='p-4'>
-      <h1 className='font-bold'>Modificar Estado del Proyecto</h1>
-      <form
-        ref={form}
-        onChange={updateFormData}
-        onSubmit={submitForm}
-        className='flex flex-col items-center'
-      >
-        <DropDown label='Estado del Proyecto' name='State' options={Enum_EstadoProyecto} />
-        <ButtonLoading disabled={false} loading={loading} text='Confirm' />
+      <h1 className='font-bold'>Modify project state</h1>
+      <form ref={form} onChange={updateFormData} onSubmit={submitForm}
+        className='flex flex-col items-center'>
+        <DropDown label='Estado del Proyecto' name='ProjectState' options={Enum_EstadoProyecto} />
+        <button onClick={() => {}} disabled={Object.keys(formData).length === 0} type='submit'
+          className='bg-indigo-700 text-white font-bold text-lg py-3 px-6 
+          rounded-xl hover:bg-indigo-500 shadow-md my-2 disabled:opacity-50 disabled:bg-gray-700'>
+            {loading ? <ReactLoading type='spin' height={30} width={30} /> : <div> CONFIRM </div>}
+        </button>
       </form>
     </div>
   );
@@ -157,9 +168,11 @@ const InscripcionProyecto = ({ idProyecto, estado, inscripciones }) => {
   useEffect(() => {
     if (data) {
       console.log(data);
-      toast.success('inscripcion creada con exito');
+      toast.success('Inscripcion creada con exito');
+    }else if (error){
+      toast.error("Error creando inscripción")
     }
-  }, [data]);
+  }, [data, error]);
 
   const confirmarInscripcion = () => {
     crearInscripcion({ variables: { Project: idProyecto, Student: userData._id } });

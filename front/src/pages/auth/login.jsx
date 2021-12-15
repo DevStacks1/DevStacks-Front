@@ -7,6 +7,7 @@ import { LOGIN } from 'graphql/auth/mutations';
 import { useAuth } from 'context/authContext';
 import { useNavigate } from 'react-router-dom';
 import ReactLoading from 'react-loading';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -30,8 +31,10 @@ const Login = () => {
         setToken(dataMutation.login.token);
         navigate('/');
       }
+    }else if (mutationError){
+      toast.error("Error en el Login")
     }
-  }, [dataMutation, setToken, navigate]);
+  }, [dataMutation, setToken, navigate, mutationError]);
 
   return (
     <div className='flex flex-col items-center justify-center w-full h-full p-10'>
