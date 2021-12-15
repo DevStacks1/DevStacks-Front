@@ -24,7 +24,7 @@ const EditarUsuario = () => {
 
   const submitForm = (e) => {
     e.preventDefault();
-    delete formData.Role;
+    console.log ("a enviar", formData)
     editarUsuario({
       variables: { _id, ...formData },
     });
@@ -70,7 +70,7 @@ const EditarUsuario = () => {
         <Input
           label='Apellido de la persona:'
           type='text'
-          name='LastName'
+          name='Lastname'
           defaultValue={queryData.User.Lastname}
           required={true}
         />
