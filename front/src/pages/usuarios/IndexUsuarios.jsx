@@ -28,7 +28,7 @@ const IndexUsuarios = () => {
                 <th>Email</th>
                 <th>Identification</th>
                 <th>Role</th>
-                <th>Srate</th>
+                <th>State</th>
                 <th>Edit</th>
                 </tr>
             </thead>
