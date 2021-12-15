@@ -13,30 +13,36 @@ import {
 
 const IndexInscripciones = () => {
   const { data, loading, error, refetch } = useQuery(GET_INSCRIPCIONES);
+  useEffect(() => {
+    console.log("inscripciones",data)
+  }, [data])
 
   if (loading) return <div>Loading...</div>;
-  return (
-    <PrivateRoute roleList={['ADMINISTRATOR', 'LEADER']}>
-      <div className='p-10'>
-        <div>INSCRIPTIONS</div>
-        <div className='my-4'>
-          <AccordionInscripcion
-            titulo='Inscripciones aprobadas'
-            data={data.Inscriptions.filter((el) => el.Inscription_State === 'ACCEPTED')}
-          />
-          <AccordionInscripcion
-            titulo='Inscripciones pendientes'
-            data={data.Inscriptions.filter((el) => el.Inscription_State === 'PENDING')}
-            refetch={refetch}
-          />
-          <AccordionInscripcion
-            titulo='Inscripciones rechazadas'
-            data={data.Inscriptions.filter((el) => el.Inscription_State === 'REJECTED')}
-          />
+  if (data){
+    return (
+      <PrivateRoute roleList={['ADMINISTRATOR', 'LEADER']}>
+        <div className='p-10'>
+          <div>INSCRIPTIONS</div>
+          <div className='my-4'>
+            <AccordionInscripcion
+              titulo='Approved inscriptions'
+              data={data.Inscriptions.filter((ins) => ins.Inscription_State === 'ACCEPTED')}
+            />
+            <AccordionInscripcion
+              titulo='Pending inscriptions'
+              data={data.Inscriptions.filter((ins) => ins.Inscription_State === 'PENDING')}
+              refetch={refetch}
+            />
+            <AccordionInscripcion
+              titulo='Rejected inscriptions'
+              data={data.Inscriptions.filter((ins) => ins.Inscription_State === 'REJECTED')}
+            />
+          </div>
         </div>
-      </div>
-    </PrivateRoute>
-  );
+      </PrivateRoute>
+    );
+  }
+  return <div>NO HAY DATOS</div>;
 };
 
 const AccordionInscripcion = ({ data, titulo, refetch = () => {} }) => {
@@ -83,15 +89,15 @@ const Inscripcion = ({ inscripcion, refetch }) => {
 
   return (
     <div className='bg-gray-900 text-gray-50 flex flex-col p-6 m-2 rounded-lg shadow-xl'>
-      <span>{inscripcion.proyecto.nombre}</span>
-      <span>{inscripcion.estudiante.nombre}</span>
-      <span>{inscripcion.estado}</span>
-      {inscripcion.estado === 'PENDIENTE' && (
+      <span>{inscripcion.Project.NameProject}</span>
+      <span>{inscripcion.Student.Name}</span>
+      <span>{inscripcion.Inscription_State}</span>
+      {inscripcion.Inscription_State === 'PENDING' && (
         <ButtonLoading
           onClick={() => {
             cambiarEstadoInscripcion();
           }}
-          text='Aprobar Inscripcion'
+          text='Approve inscription'
           loading={loading}
           disabled={false}
         />

@@ -1,15 +1,15 @@
 import { gql } from '@apollo/client';
 
 const EDITAR_USUARIO = gql`
-  mutation EditarUsuario(
+  mutation UpdateUser(
     $_id: String!
     $Name: String!
     $Lastname: String!
     $Identification: String!
     $Email: String!
-    $State: Enum_StateUsuario!
+    $State: Enum_UserState!
   ) {
-    editarUsuario(
+    UpdateUser(
       _id: $_id
       Name: $Name
       Lastname: $Lastname
