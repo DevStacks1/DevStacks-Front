@@ -7,12 +7,12 @@ import { useAuth } from 'context/authContext';
 import { REFRESH_TOKEN } from 'graphql/auth/mutations';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
-import PrivateRoute from 'components/PrivateRoute';
 import ReactLoading from 'react-loading';
+import { toast } from 'react-toastify';
 
 const PrivateLayout = () => {
   const navigate = useNavigate();
-  const { authToken, setToken } = useAuth();
+  const { setToken } = useAuth();
   const [loadingAuth, setLoadingAuth] = useState(true);
 
   const [refreshToken, { data: dataMutation, loading: loadingMutation, error: errorMutation }] =
@@ -20,7 +20,10 @@ const PrivateLayout = () => {
 
   useEffect(() => {
     refreshToken();
-  }, [refreshToken]);
+    if (errorMutation){
+      toast.error("Error refrescando token")
+    }
+  }, [refreshToken, errorMutation]);
 
   useEffect(() => {
     if (dataMutation) {

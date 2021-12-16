@@ -14,8 +14,10 @@ import {
 const IndexInscripciones = () => {
   const { data, loading, error, refetch } = useQuery(GET_INSCRIPCIONES);
   useEffect(() => {
-    console.log("inscripciones",data)
-  }, [data])
+    if (error){
+      toast.error("Error cargando inscripciones")
+    }
+  }, [error])
 
   if (loading) return <div>Loading...</div>;
   if (data){
@@ -70,19 +72,15 @@ const Inscripcion = ({ inscripcion, refetch }) => {
     if (data) {
       toast.success('Inscripcion aprobada con exito');
       refetch();
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (error) {
+    }else if (error) {
       toast.error('Error aprobando la inscripcion');
     }
-  }, [error]);
+  }, [data, error ,refetch]);
 
   const cambiarEstadoInscripcion = () => {
     aprobarInscripcion({
       variables: {
-        aprobarInscripcionId: inscripcion._id,
+        ApproveInscriptionId: inscripcion._id,
       },
     });
   };

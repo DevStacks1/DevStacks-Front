@@ -10,6 +10,8 @@ import ReactLoading from 'react-loading';
 import wave from 'media/wave.png'
 import logo3 from 'media/logo3.png'
 import team from 'media/team.svg'
+import { toast } from 'react-toastify';
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -33,8 +35,10 @@ const Login = () => {
         setToken(dataMutation.login.token);
         navigate('/');
       }
+    }else if (mutationError){
+      toast.error("Error en el Login")
     }
-  }, [dataMutation, setToken, navigate]);
+  }, [dataMutation, setToken, navigate, mutationError]);
 
   return (
     <body className='overflow-x-hidden'>
