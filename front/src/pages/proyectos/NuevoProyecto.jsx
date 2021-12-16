@@ -20,7 +20,7 @@ const NuevoProyecto = () => {
   const [listaUsuarios, setListaUsuarios] = useState({});
   const { data, loading, error } = useQuery(GET_USUARIOS, {
     variables: {
-      filtro: { Role: 'LEADER' || 'ADMINISTRATOR', State: 'AUTHORIZED' },
+      filtro: { Role: 'LEADER', State: 'AUTHORIZED' },
     },
   });
 
@@ -52,6 +52,7 @@ const NuevoProyecto = () => {
     e.preventDefault();
     formData.Objectives = Object.values(formData.objetivos);
     formData.Budget = parseFloat(formData.Budget);
+    
     
     crearProyecto({
       variables: formData,
