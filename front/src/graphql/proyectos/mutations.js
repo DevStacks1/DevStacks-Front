@@ -1,29 +1,29 @@
 import { gql } from '@apollo/client';
 
 const EDITAR_PROYECTO = gql`
-  mutation EditarProyecto($_id: String!, $Fields: FieldsProyect!) {
-    editarProyecto(_id: $_id, Fields: $Fields) {
+  mutation UpdateProject($_id: String!, $Fields: ProjectFields!) {
+    UpdateProject(idProject: $_id, Fields: $Fields) {
       _id
-      ProyectState
+      ProjectState
     }
   }
 `;
 
 const CREAR_PROYECTO = gql`
-  mutation CrearProyecto(
-    $Name: String!
+  mutation CreateProject(
+    $NameProject: String!
     $Budget: Float!
     $Initial_Date: Date!
     $Final_Date: Date!
     $Leader: String!
-    $Objectives: [crearObjetivo]
+    $Objectives: [CreateObjective]
   ) {
-    crearProyecto(
-      Name: $Name
+    CreateProject(
+      NameProject: $NameProject
       Budget: $Budget
       Initial_Date: $Initial_Date
       Final_Date: $Final_Date
-      Leader: $leader
+      Leader: $Leader
       Objectives: $Objectives
     ) {
       _id

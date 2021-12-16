@@ -9,6 +9,7 @@ import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router';
 import { useAuth } from 'context/authContext';
 import ReactLoading from 'react-loading';
+import { toast } from 'react-toastify';
 
 const Register = () => {
   // llamamos contextos
@@ -31,8 +32,10 @@ const Register = () => {
         setToken(dataMutation.registro.token);
         navigate('/');
       }
+    }else if(errorMutation){
+      toast.error("Error en el registro")
     }
-  }, [dataMutation, setToken, navigate]);
+  }, [dataMutation, setToken, navigate, errorMutation]);
 
   return (
     <div className='flex flex-col h-full w-full items-center justify-center'>
