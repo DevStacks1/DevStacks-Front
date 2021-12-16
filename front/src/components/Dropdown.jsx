@@ -9,7 +9,7 @@ const DropDown = ({ label, name, defaultValue = '', required, options }) => {
   }, [defaultValue]);
   return (
     <label htmlFor={name} className='flex flex-col my-3'>
-      <span>{label}</span>
+      <span className='font-bold text-gray-500'>{label}</span>
       <select
         required={required}
         name={name}
