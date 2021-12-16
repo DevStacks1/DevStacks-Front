@@ -60,7 +60,7 @@ const AccordionProyecto = ({ proyecto }) => {
         <AccordionSummaryStyled expandIcon={<i className='fas fa-chevron-down' />}>
           <div className='flex w-full justify-between'>
             <div className='uppercase font-bold text-gray-100 '>
-              {proyecto.NameProject} - {proyecto.ProjectState}
+              {proyecto.NameProject}: {proyecto.Identificator} - {proyecto.ProjectState}
             </div>
           </div>
         </AccordionSummaryStyled>
@@ -77,7 +77,8 @@ const AccordionProyecto = ({ proyecto }) => {
               inscripciones={proyecto.Inscriptions}
             />
           </PrivateComponent>
-          <div>Liderado por: {proyecto.Leader.Email}</div>
+          <div>Liderado por: {proyecto.Leader.Name} {proyecto.Leader.Lastname}</div>
+          <div>Documento: {proyecto.Leader.Identification}</div>
           <div className='flex'>
             {proyecto.Objectives.map((objetivo) => {
               return <Objetivo tipo={objetivo.Type} descripcion={objetivo.Description} />;
@@ -144,19 +145,19 @@ const Objetivo = ({ tipo, descripcion }) => {
   );
 };
 
-const InscripcionProyecto = ({ idProyecto, estado, inscripciones }) => {
+const InscripcionProyecto = ({ idProyecto, estado, inscripcion }) => {
   const [estadoInscripcion, setEstadoInscripcion] = useState('');
   const [crearInscripcion, { data, loading, error }] = useMutation(CREAR_INSCRIPCION);
   const { userData } = useUser();
 
   useEffect(() => {
-    if (userData && inscripciones) {
-      const flt = inscripciones.filter((el) => el.estudiante._id === userData._id);
+    if (userData && inscripcion) {
+      const flt = inscripcion.filter((el) => el.Student._id === userData._id);
       if (flt.length > 0) {
         setEstadoInscripcion(flt[0].State);
       }
     }
-  }, [userData, inscripciones]);
+  }, [userData, inscripcion]);
 
   useEffect(() => {
     if (data) {
@@ -174,7 +175,7 @@ const InscripcionProyecto = ({ idProyecto, estado, inscripciones }) => {
   return (
     <>
       {estadoInscripcion !== '' ? (
-        <span>Ya estas inscrito en este proyecto y el estado es {estadoInscripcion}</span>
+        <span>Ya estás inscrito en este proyecto y el estado es: {estadoInscripcion}</span>
       ) : (
         <ButtonLoading
           onClick={() => confirmarInscripcion()}
