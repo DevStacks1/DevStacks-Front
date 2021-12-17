@@ -48,7 +48,7 @@ const Login = () => {
         src={team}
         class="hidden lg:block w-1/2 hover:scale-150 transition-all duration-500 transform mx-auto"
       />
-       <form className='flex flex-col justify-center items-center w-1/2' onSubmit={submitForm} onChange={updateFormData} ref={form}>
+       <form className='flex flex-col justify-center items-center w-4/5' onSubmit={submitForm} onChange={updateFormData} ref={form}>
         <img src={logo3} class="w-32"/>
         <h2
           class="my-8 font-display font-bold text-3xl text-gray-700 text-center"
