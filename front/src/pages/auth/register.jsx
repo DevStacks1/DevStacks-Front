@@ -51,7 +51,7 @@ const Register = () => {
           <Input label='Password:' name='Password' type='Password' required />
         </div>
         <button disabled={Object.keys(formData).length === 0} type='submit'
-        className='block w-full bg-primarycolor hover:bg-green-300 p-4 rounded  font-bold text-white hover:text-white transition duration-300' >
+        className='block w-full bg-gray-400 hover:bg-gray-300 p-4 rounded  font-bold text-white hover:text-white transition duration-300' >
           {mutationLoading ? <ReactLoading type='spin' height={30} width={30} /> : <div> SIGN UP </div>}
         </button>
       </form>
