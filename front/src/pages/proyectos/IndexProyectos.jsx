@@ -4,7 +4,6 @@ import { PROYECTOS } from 'graphql/proyectos/queries';
 import DropDown from 'components/Dropdown';
 import { Dialog } from '@mui/material';
 import { Enum_EstadoProyecto } from 'utils/enums';
-import ButtonLoading from 'components/ButtonLoading';
 import { EDITAR_PROYECTO } from 'graphql/proyectos/mutations';
 import useFormData from 'hooks/useFormData';
 import PrivateComponent from 'components/PrivateComponent';
@@ -28,7 +27,7 @@ const IndexProyectos = () => {
     }
   }, [error])
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div><ReactLoading type='spin' height={30} width={30} /></div>;
   
   if (queryData) {
     return (
@@ -45,11 +44,13 @@ const IndexProyectos = () => {
         </PrivateComponent>
         {queryData ? (queryData.Projects.map((proyect) => {
           return <AccordionProyecto proyecto={proyect} key={proyect._id} />;
-        })) : (<div>No hay datos</div>)}
+        })) : (<div>No hay daticos</div>)}
       </div>
     );
   }
-  return <>No hay datos</>;
+  return <>No hay datos <button className='bg-indigo-500 text-gray-50 p-2 rounded-lg shadow-lg hover:bg-indigo-400'>
+  <Link to='/proyectos/nuevo'>Create new project</Link>
+</button></>;
 };
 
 const AccordionProyecto = ({ proyecto }) => {
@@ -60,14 +61,19 @@ const AccordionProyecto = ({ proyecto }) => {
         <AccordionSummaryStyled expandIcon={<i className='fas fa-chevron-down' />}>
           <div className='flex w-full justify-between'>
             <div className='uppercase font-bold text-gray-100 '>
-              {proyecto.NameProject}: {proyecto.Identificator} - {proyecto.ProjectState}
+              {proyecto.NameProject} - {proyecto.ProjectState}
             </div>
           </div>
         </AccordionSummaryStyled>
         <AccordionDetailsStyled>
-          <PrivateComponent roleList={['ADMINISTRATOR']}>
-            <div onClick={() => {setShowDialog(true);}}>
-              <i className='mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400'/>
+        <PrivateComponent roleList={['ADMINISTRATOR']}>
+            <div className='flex w-full justify-end'>
+              <div onClick={() => {setShowDialog(true);}}>
+                <i className='mx-4 fas fa-pen  hover:text-white cursor-pointer'/>
+              </div>
+              <div onClick={() => {setShowDialog(true);}}>
+                <i className='mx-4 fas fa-trash text-red-600  hover:text-red-400 cursor-pointer'/>
+              </div>
             </div>
           </PrivateComponent>
           <PrivateComponent roleList={['STUDENT']}>
@@ -84,12 +90,72 @@ const AccordionProyecto = ({ proyecto }) => {
               return <Objetivo tipo={objetivo.Type} descripcion={objetivo.Description} />;
             })}
           </div>
+        <PrivateComponent roleList={['ADMINISTRATOR','STUDENT']}>
+            <InscripcionProyecto
+              idProyecto={proyecto._id}
+              estado={proyecto.ProjectState}
+              inscripciones={proyecto.Inscriptions}
+            />
+        </PrivateComponent>
         </AccordionDetailsStyled>
       </AccordionStyled>
       <Dialog open={showDialog} 
         onClose={() => {setShowDialog(false);}}>
           <FormEditProyecto _id={proyecto._id} />
       </Dialog>
+    </>
+  );
+};
+
+
+const Objetivo = ({ tipo, descripcion }) => {
+  return (
+    <div className='mx-5 my-4 bg-gray-50 p-8 rounded-lg flex flex-col items-center justify-center shadow-xl'>
+      <div className='text-lg font-bold'>{tipo}</div>
+      <div>{descripcion}</div>
+      <PrivateComponent roleList={['ADMINISTRATOR']}>
+        <div>Edit</div>
+      </PrivateComponent>
+    </div>
+  );
+};
+
+const InscripcionProyecto = ({ idProyecto, estado, inscripcion }) => {
+  const [estadoInscripcion, setEstadoInscripcion] = useState('');
+  const [crearInscripcion, { data, loading, error }] = useMutation(CREAR_INSCRIPCION);
+  const { userData } = useUser();
+
+  useEffect(() => {
+    if (userData && inscripcion) {
+      const flt = inscripcion.filter((el) => el.Student._id === userData._id);
+      if (flt.length > 0) {
+        setEstadoInscripcion(flt[0].Inscription_State);
+      }
+    }
+  }, [userData, inscripcion]);
+
+  useEffect(() => {
+    if (data) {
+      toast.success('Inscripcion creada con exito');
+    }else if (error){
+      toast.error("Error creando inscripción")
+    }
+  }, [data, error]);
+
+  const confirmarInscripcion = () => {
+    crearInscripcion({ variables: { Project: idProyecto, Student: userData._id } });
+  };
+
+  return (
+    <>
+      {estadoInscripcion !== '' ? (
+        <span>you are already enrolled on this project - Status: {estadoInscripcion}</span>
+      ) : (
+      <button onClick={() => confirmarInscripcion()} disabled={estado === 'INACTIVE'} type='submit'
+          className='bg-indigo-700 text-white font-bold text-lg py-3 px-6  rounded-xl
+          hover:bg-indigo-500 shadow-md my-2 disabled:opacity-50 disabled:bg-gray-700'>
+          {loading ? <ReactLoading type='spin' height={30} width={30} /> : <div>Enroll</div>}
+      </button>)}
     </>
   );
 };
@@ -130,61 +196,6 @@ const FormEditProyecto = ({ _id }) => {
         </button>
       </form>
     </div>
-  );
-};
-
-const Objetivo = ({ tipo, descripcion }) => {
-  return (
-    <div className='mx-5 my-4 bg-gray-50 p-8 rounded-lg flex flex-col items-center justify-center shadow-xl'>
-      <div className='text-lg font-bold'>{tipo}</div>
-      <div>{descripcion}</div>
-      <PrivateComponent roleList={['ADMINISTRATOR']}>
-        <div>Edit</div>
-      </PrivateComponent>
-    </div>
-  );
-};
-
-const InscripcionProyecto = ({ idProyecto, estado, inscripcion }) => {
-  const [estadoInscripcion, setEstadoInscripcion] = useState('');
-  const [crearInscripcion, { data, loading, error }] = useMutation(CREAR_INSCRIPCION);
-  const { userData } = useUser();
-
-  useEffect(() => {
-    if (userData && inscripcion) {
-      const flt = inscripcion.filter((el) => el.Student._id === userData._id);
-      if (flt.length > 0) {
-        setEstadoInscripcion(flt[0].State);
-      }
-    }
-  }, [userData, inscripcion]);
-
-  useEffect(() => {
-    if (data) {
-      console.log(data);
-      toast.success('Inscripcion creada con exito');
-    }else if (error){
-      toast.error("Error creando inscripción")
-    }
-  }, [data, error]);
-
-  const confirmarInscripcion = () => {
-    crearInscripcion({ variables: { Project: idProyecto, Student: userData._id } });
-  };
-
-  return (
-    <>
-      {estadoInscripcion !== '' ? (
-        <span>Ya estás inscrito en este proyecto y el estado es: {estadoInscripcion}</span>
-      ) : (
-        <ButtonLoading
-          onClick={() => confirmarInscripcion()}
-          disabled={estado === 'INACTIVO'}
-          loading={loading}
-          text='Inscribirme en este proyecto'
-        />
-      )}
-    </>
   );
 };
 
