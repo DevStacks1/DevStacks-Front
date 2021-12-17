@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 const CREAR_INSCRIPCION = gql`
-  mutation Mutation($Project: String!, $Student: String!) {
-    crearInscripcion(Project: $Project, Student: $Student) {
+  mutation CreateInscription($Project: String!, $Student: String!) {
+    CreateInscription(Project: $Project, Student: $Student) {
       _id
     }
   }
