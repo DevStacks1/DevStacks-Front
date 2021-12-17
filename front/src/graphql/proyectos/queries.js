@@ -4,7 +4,7 @@ const PROYECTOS = gql`
   query Projects {
     Projects {
       _id
-      Identificator
+      
       NameProject
       ProjectState
       Objectives {

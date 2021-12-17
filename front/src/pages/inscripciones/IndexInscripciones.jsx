@@ -10,6 +10,7 @@ import {
   AccordionSummaryStyled,
   AccordionDetailsStyled,
 } from 'components/Accordion';
+import ReactLoading from 'react-loading';
 
 const IndexInscripciones = () => {
   const { data, loading, error, refetch } = useQuery(GET_INSCRIPCIONES);
@@ -19,7 +20,7 @@ const IndexInscripciones = () => {
     }
   }, [error])
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div><ReactLoading type='spin' height={30} width={30} /></div>;
   if (data){
     return (
       <PrivateRoute roleList={['ADMINISTRATOR', 'LEADER']}>

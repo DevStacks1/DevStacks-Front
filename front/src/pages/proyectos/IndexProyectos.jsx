@@ -28,7 +28,7 @@ const IndexProyectos = () => {
     }
   }, [error])
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div><ReactLoading type='spin' height={30} width={30} /></div>;
   
   if (queryData) {
     return (
@@ -45,11 +45,13 @@ const IndexProyectos = () => {
         </PrivateComponent>
         {queryData ? (queryData.Projects.map((proyect) => {
           return <AccordionProyecto proyecto={proyect} key={proyect._id} />;
-        })) : (<div>No hay datos</div>)}
+        })) : (<div>No hay daticos</div>)}
       </div>
     );
   }
-  return <>No hay datos</>;
+  return <>No hay datos <button className='bg-indigo-500 text-gray-50 p-2 rounded-lg shadow-lg hover:bg-indigo-400'>
+  <Link to='/proyectos/nuevo'>Create new project</Link>
+</button></>;
 };
 
 const AccordionProyecto = ({ proyecto }) => {
