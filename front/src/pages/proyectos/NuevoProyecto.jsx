@@ -13,8 +13,6 @@ import { CREAR_PROYECTO } from 'graphql/proyectos/mutations';
 import { toast } from 'react-toastify';
 import ReactLoading from 'react-loading';
 
-var myNumeroAleatorio = Math.floor(Math.random()*999999)
-
 const NuevoProyecto = () => {
   const { form, formData, updateFormData } = useFormData();
   const [listaUsuarios, setListaUsuarios] = useState({});
@@ -52,8 +50,7 @@ const NuevoProyecto = () => {
     e.preventDefault();
     formData.Objectives = Object.values(formData.objetivos);
     formData.Budget = parseFloat(formData.Budget);
-    
-    
+
     crearProyecto({
       variables: formData,
     });
@@ -70,7 +67,6 @@ const NuevoProyecto = () => {
       </div>
       <h1 className='text-2xl font-bold text-gray-900'>Create new project</h1>
       <form ref={form} onChange={updateFormData} onSubmit={submitForm}>
-        <Input readOnly={true} name='Identificator' label='Identificador de Proyecto' defaultValue={`RP-${myNumeroAleatorio}`}  required={true} type='text' />
         <Input name='NameProject' label='Nombre del Proyecto' required={true} type='text' />
         <Input name='Budget' label='Presupuesto del Proyecto' required={true} type='number' />
         <Input name='Initial_Date' label='Fecha de Inicio' required={true} type='date' />

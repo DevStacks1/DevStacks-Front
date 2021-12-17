@@ -11,7 +11,6 @@ const EDITAR_PROYECTO = gql`
 
 const CREAR_PROYECTO = gql`
   mutation CreateProject(
-    $Identificator: String!
     $NameProject: String!
     $Budget: Float!
     $Initial_Date: Date!
@@ -20,7 +19,6 @@ const CREAR_PROYECTO = gql`
     $Objectives: [CreateObjective]
   ) {
     CreateProject(
-      Identificator: $Identificator
       NameProject: $NameProject
       Budget: $Budget
       Initial_Date: $Initial_Date

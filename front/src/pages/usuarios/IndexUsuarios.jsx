@@ -17,7 +17,7 @@ const IndexUsuarios = () => {
     if (loading) return <div>Cargando....</div>;
 
     return (
-        <PrivateRoute roleList={['ADMINISTRATOR']}>
+        <PrivateRoute roleList={['ADMINISTRATOR','LEADER']}>
         <div>
             Datos Usuarios:
             <table className='tabla w-screen overflow-hidden'>
@@ -47,7 +47,6 @@ const IndexUsuarios = () => {
                         <td>
                             <Link to={`/usuarios/editar/${campo._id}`}>
                                 <i className='fas fa-pen' />
-                                edit
                             </Link>
 
                         </td>

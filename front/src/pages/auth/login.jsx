@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import Input from 'components/Input';
 import { Link } from 'react-router-dom';
 import useFormData from 'hooks/useFormData';
 import { useMutation } from '@apollo/client';
@@ -42,14 +41,15 @@ const Login = () => {
 
   return (
     <body className='overflow-x-hidden'>
-      <img src={wave} class="fixed hidden lg:block inset-0 h-full"/>
+      <img src={wave} class="fixed hidden lg:block inset-0 h-full" alt=""/>
       <div class="w-screen h-screen flex flex-col justify-center items-center lg:grid lg:grid-cols-2">
       <img
         src={team}
         class="hidden lg:block w-1/2 hover:scale-150 transition-all duration-500 transform mx-auto"
+        alt=""
       />
-       <form className='flex flex-col justify-center items-center w-4/5' onSubmit={submitForm} onChange={updateFormData} ref={form}>
-        <img src={logo3} class="w-32"/>
+      <form className='flex flex-col justify-center items-center w-4/5' onSubmit={submitForm} onChange={updateFormData} ref={form}>
+        <img src={logo3} class="w-32" alt=""/>
         <h2
           class="my-8 font-display font-bold text-3xl text-gray-700 text-center"
         >

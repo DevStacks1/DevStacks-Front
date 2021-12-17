@@ -9,10 +9,12 @@ import { EDITAR_USUARIO } from 'graphql/usuarios/mutations';
 import DropDown from 'components/Dropdown';
 import { Enum_EstadoUsuario } from 'utils/enums';
 import ReactLoading from 'react-loading';
+import { useUser } from 'context/userContext';
 
 const EditarUsuario = () => {
   const { form, formData, updateFormData } = useFormData(null);
   const { _id } = useParams();
+  const {userData} = useUser()
 
   const {data: queryData,error: queryError,loading: queryLoading} = useQuery(GET_USUARIO, {
     variables: { _id },
@@ -24,7 +26,6 @@ const EditarUsuario = () => {
 
   const submitForm = (e) => {
     e.preventDefault();
-    console.log ("a enviar", formData)
     editarUsuario({
       variables: { _id, ...formData },
     });
@@ -66,6 +67,7 @@ const EditarUsuario = () => {
           name='Name'
           defaultValue={queryData.User.Name}
           required={true}
+          disabled = {userData.Role === 'LEADER'}
         />
         <Input
           label='Apellido de la persona:'
@@ -73,6 +75,7 @@ const EditarUsuario = () => {
           name='Lastname'
           defaultValue={queryData.User.Lastname}
           required={true}
+          disabled = {userData.Role === 'LEADER'}
         />
         <Input
           label='Correo de la persona:'
@@ -80,6 +83,7 @@ const EditarUsuario = () => {
           name='Email'
           defaultValue={queryData.User.Email}
           required={true}
+          disabled = {userData.Role === 'LEADER'}
         />
         <Input
           label='Identificación de la persona:'
@@ -87,6 +91,7 @@ const EditarUsuario = () => {
           name='Identification'
           defaultValue={queryData.User.Identification}
           required={true}
+          disabled = {userData.Role === 'LEADER'}
         />
         <DropDown
           label='Estado de la persona:'

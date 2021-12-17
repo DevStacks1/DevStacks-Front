@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { PROYECTOS } from 'graphql/proyectos/queries';
 import DropDown from 'components/Dropdown';
 import { Dialog } from '@mui/material';
-import { Enum_EstadoProyecto } from 'utils/enums';
+import { Enum_EstadoProyecto, Enum_TipoObjetivo } from 'utils/enums';
 import { EDITAR_PROYECTO } from 'graphql/proyectos/mutations';
 import useFormData from 'hooks/useFormData';
 import PrivateComponent from 'components/PrivateComponent';
@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import { CREAR_INSCRIPCION } from 'graphql/inscripciones/mutaciones';
 import { useUser } from 'context/userContext';
 import { toast } from 'react-toastify';
+import Input from 'components/Input';
 import {
   AccordionStyled,
   AccordionSummaryStyled,
@@ -20,6 +21,7 @@ import ReactLoading from 'react-loading';
 
 const IndexProyectos = () => {
   const { data: queryData, loading, error } = useQuery(PROYECTOS);
+  const {userData} = useUser()
 
   useEffect(() => {
     if (error){
@@ -43,8 +45,12 @@ const IndexProyectos = () => {
           </div>
         </PrivateComponent>
         {queryData ? (queryData.Projects.map((proyect) => {
-          return <AccordionProyecto proyecto={proyect} key={proyect._id} />;
-        })) : (<div>No hay daticos</div>)}
+          return (<div>
+            {(userData._id === proyect.Leader._id && userData.State === 'STUDENT') ? (<AccordionProyecto proyecto={proyect} key={proyect._id} />):(
+              <AccordionProyecto proyecto={proyect} key={proyect._id} />)}
+          </div>)
+        })) :(
+        <div>No hay datos</div>)}
       </div>
     );
   }
@@ -71,17 +77,7 @@ const AccordionProyecto = ({ proyecto }) => {
               <div onClick={() => {setShowDialog(true);}}>
                 <i className='mx-4 fas fa-pen  hover:text-white cursor-pointer'/>
               </div>
-              <div onClick={() => {setShowDialog(true);}}>
-                <i className='mx-4 fas fa-trash text-red-600  hover:text-red-400 cursor-pointer'/>
-              </div>
             </div>
-          </PrivateComponent>
-          <PrivateComponent roleList={['STUDENT']}>
-            <InscripcionProyecto
-              idProyecto={proyecto._id}
-              estado={proyecto.ProjectState}
-              inscripciones={proyecto.Inscriptions}
-            />
           </PrivateComponent>
           <div>Liderado por: {proyecto.Leader.Name} {proyecto.Leader.Lastname}</div>
           <div>Documento: {proyecto.Leader.Identification}</div>
@@ -90,7 +86,7 @@ const AccordionProyecto = ({ proyecto }) => {
               return <Objetivo tipo={objetivo.Type} descripcion={objetivo.Description} />;
             })}
           </div>
-        <PrivateComponent roleList={['ADMINISTRATOR','STUDENT']}>
+        <PrivateComponent roleList={['STUDENT']}>
             <InscripcionProyecto
               idProyecto={proyecto._id}
               estado={proyecto.ProjectState}
@@ -101,7 +97,7 @@ const AccordionProyecto = ({ proyecto }) => {
       </AccordionStyled>
       <Dialog open={showDialog} 
         onClose={() => {setShowDialog(false);}}>
-          <FormEditProyecto _id={proyecto._id} />
+          <FormEditProyecto _id={proyecto._id} proyecto={proyecto} />
       </Dialog>
     </>
   );
@@ -160,12 +156,15 @@ const InscripcionProyecto = ({ idProyecto, estado, inscripcion }) => {
   );
 };
 
-const FormEditProyecto = ({ _id }) => {
+const FormEditProyecto = ({ _id , proyecto}) => {
   const { form, formData, updateFormData } = useFormData();
   const [editarProyecto, { data: dataMutation, loading, error }] = useMutation(EDITAR_PROYECTO);
 
   const submitForm = (e) => {
     e.preventDefault();
+    formData.Objectives = Object.values(formData.objetivos);
+    delete formData.objetivos
+    formData.Budget = parseFloat(formData.Budget);
     editarProyecto({
       variables: {
         _id,
@@ -188,12 +187,51 @@ const FormEditProyecto = ({ _id }) => {
       <h1 className='font-bold'>Modify project state</h1>
       <form ref={form} onChange={updateFormData} onSubmit={submitForm}
         className='flex flex-col items-center'>
-        <DropDown label='Estado del Proyecto' name='ProjectState' options={Enum_EstadoProyecto} />
-        <button onClick={() => {}} disabled={Object.keys(formData).length === 0} type='submit'
-          className='bg-indigo-700 text-white font-bold text-lg py-3 px-6 
-          rounded-xl hover:bg-indigo-500 shadow-md my-2 disabled:opacity-50 disabled:bg-gray-700'>
-            {loading ? <ReactLoading type='spin' height={30} width={30} /> : <div> CONFIRM </div>}
-        </button>
+          <Input
+          label='Nombre del Proyecto'
+          type='text'
+          name='NameProject'
+          defaultValue={proyecto.NameProject}
+          required={true}
+          />
+          <Input
+            label='Presupuesto'
+            type='number'
+            name='Budget'
+            defaultValue={proyecto.Budget}
+            required={true}
+          />
+          <DropDown 
+            label='Estado del Proyecto'
+            name='ProjectState'
+            options={Enum_EstadoProyecto}
+            defaultValue={proyecto.ProjectState}
+          />
+          {proyecto.Objectives.map((objetivo)=>{
+            return (
+              <div>
+                <Input
+                  name={`objetivos||${proyecto._id}||Description`}
+                  label='Descripción'
+                  type='text'
+                  defaultValue={objetivo.Description}
+                  required={true}
+                />
+                <DropDown
+                  name={`objetivos||${proyecto._id}||Type`}
+                  options={Enum_TipoObjetivo}
+                  label='Tipo de Objetivo'
+                  defaultValue={objetivo.Type}
+                  required={true}
+                />
+              </div>
+            )
+          })}
+          <button onClick={() => {}} disabled={Object.keys(formData).length === 0} type='submit'
+            className='bg-indigo-700 text-white font-bold text-lg py-3 px-6 
+            rounded-xl hover:bg-indigo-500 shadow-md my-2 disabled:opacity-50 disabled:bg-gray-700'>
+              {loading ? <ReactLoading type='spin' height={30} width={30} /> : <div> CONFIRM </div>}
+          </button>
       </form>
     </div>
   );

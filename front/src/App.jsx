@@ -60,7 +60,6 @@ function App() {
   useEffect(() => {
     if (authToken) {
       const decoded = jwt_decode(authToken);
-      console.log("decode",decoded);
       setUserData({
         _id: decoded._id,
         Name: decoded.Name,
