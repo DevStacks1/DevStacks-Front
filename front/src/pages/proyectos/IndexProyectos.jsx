@@ -18,6 +18,7 @@ import {
   AccordionDetailsStyled,
 } from 'components/Accordion';
 import ReactLoading from 'react-loading';
+import { FILTRAR_AVANCES } from 'graphql/avance/mutations';
 
 const IndexProyectos = () => {
   const { data: queryData, loading, error } = useQuery(PROYECTOS);
@@ -29,9 +30,10 @@ const IndexProyectos = () => {
     }
   }, [error])
 
+
   if (loading) return <div><ReactLoading type='spin' height={30} width={30} /></div>;
   
-  if (queryData) {
+  if (queryData && userData) {
     return (
       <div className='p-10 flex flex-col'>
         <div className='flex w-full items-center justify-center'>
@@ -44,13 +46,16 @@ const IndexProyectos = () => {
             </button>
           </div>
         </PrivateComponent>
-        {queryData ? (queryData.Projects.map((proyect) => {
+        {userData.Role === 'LEADER' ? (queryData.Projects.map((proyect) => {
           return (<div>
-            {(userData._id === proyect.Leader._id && userData.State === 'STUDENT') ? (<AccordionProyecto proyecto={proyect} key={proyect._id} />):(
-              <AccordionProyecto proyecto={proyect} key={proyect._id} />)}
+            {(userData._id === proyect.Leader._id ) ? (<AccordionProyecto proyecto={proyect} key={proyect._id} />):(
+              <></>)}
           </div>)
-        })) :(
-        <div>No hay datos</div>)}
+        })) : (
+          queryData.Projects.map((proyect) => {
+            return <AccordionProyecto proyecto={proyect} key={proyect._id} />
+          })
+        )}
       </div>
     );
   }
@@ -61,8 +66,21 @@ const IndexProyectos = () => {
 
 const AccordionProyecto = ({ proyecto }) => {
   const [showDialog, setShowDialog] = useState(false);
+  const {data:dataAvances, loading, error:errorAvances}  = useQuery(FILTRAR_AVANCES, {variables:{ProjectId:proyecto._id}});
+  
+  useEffect(() => {
+    if (errorAvances){
+      toast.error("error cargando avances")
+    }
+    if (dataAvances){
+      console.log("avances", dataAvances.filtrarAvance);
+    }
+  }, [errorAvances, dataAvances])
+
+  if (loading){return <div>Loading...</div> };
+
   return (
-    <>
+    <div>
       <AccordionStyled>
         <AccordionSummaryStyled expandIcon={<i className='fas fa-chevron-down' />}>
           <div className='flex w-full justify-between'>
@@ -71,6 +89,7 @@ const AccordionProyecto = ({ proyecto }) => {
             </div>
           </div>
         </AccordionSummaryStyled>
+
         <AccordionDetailsStyled>
         <PrivateComponent roleList={['ADMINISTRATOR', 'LEADER']}>
             <div className='flex w-full justify-end'>
@@ -94,15 +113,24 @@ const AccordionProyecto = ({ proyecto }) => {
             />
         </PrivateComponent>
         </AccordionDetailsStyled>
+        <AccordionDetailsStyled>
+        {dataAvances ? ( dataAvances.filtrarAvance.map ((avance)=>{
+          return (<div className='flex flex-col bg-white'>
+            <span>Progress create by {avance.CreatedBy.Name +" "+ avance.CreatedBy.Lastname}</span>
+            <p> {avance.Description} </p>
+          </div>)
+        })) : ( <div> there is no progress</div> )}
+
+        </AccordionDetailsStyled>
       </AccordionStyled>
+      
       <Dialog open={showDialog} 
         onClose={() => {setShowDialog(false);}}>
           <FormEditProyecto _id={proyecto._id} proyecto={proyecto} />
       </Dialog>
-    </>
+    </div>
   );
 };
-
 
 const Objetivo = ({ tipo, descripcion }) => {
   return (
