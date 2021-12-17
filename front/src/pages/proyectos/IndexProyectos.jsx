@@ -27,7 +27,7 @@ const IndexProyectos = () => {
     }
   }, [error])
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div><ReactLoading type='spin' height={30} width={30} /></div>;
   
   if (queryData) {
     return (
@@ -44,11 +44,13 @@ const IndexProyectos = () => {
         </PrivateComponent>
         {queryData ? (queryData.Projects.map((proyect) => {
           return <AccordionProyecto proyecto={proyect} key={proyect._id} />;
-        })) : (<div>No hay datos</div>)}
+        })) : (<div>No hay daticos</div>)}
       </div>
     );
   }
-  return <>No hay datos</>;
+  return <>No hay datos <button className='bg-indigo-500 text-gray-50 p-2 rounded-lg shadow-lg hover:bg-indigo-400'>
+  <Link to='/proyectos/nuevo'>Create new project</Link>
+</button></>;
 };
 
 const AccordionProyecto = ({ proyecto }) => {
@@ -59,7 +61,7 @@ const AccordionProyecto = ({ proyecto }) => {
         <AccordionSummaryStyled expandIcon={<i className='fas fa-chevron-down' />}>
           <div className='flex w-full justify-between'>
             <div className='uppercase font-bold text-gray-100 '>
-              {proyecto.NameProject} - {proyecto.ProjectState}                   
+              {proyecto.NameProject} - {proyecto.ProjectState}
             </div>
           </div>
         </AccordionSummaryStyled>
@@ -73,8 +75,16 @@ const AccordionProyecto = ({ proyecto }) => {
                 <i className='mx-4 fas fa-trash text-red-600  hover:text-red-400 cursor-pointer'/>
               </div>
             </div>
-        </PrivateComponent>
-          <div>Liderado por: {proyecto.Leader.Email}</div>
+          </PrivateComponent>
+          <PrivateComponent roleList={['STUDENT']}>
+            <InscripcionProyecto
+              idProyecto={proyecto._id}
+              estado={proyecto.ProjectState}
+              inscripciones={proyecto.Inscriptions}
+            />
+          </PrivateComponent>
+          <div>Liderado por: {proyecto.Leader.Name} {proyecto.Leader.Lastname}</div>
+          <div>Documento: {proyecto.Leader.Identification}</div>
           <div className='flex'>
             {proyecto.Objectives.map((objetivo) => {
               return <Objetivo tipo={objetivo.Type} descripcion={objetivo.Description} />;
@@ -110,19 +120,19 @@ const Objetivo = ({ tipo, descripcion }) => {
   );
 };
 
-const InscripcionProyecto = ({ idProyecto, estado, inscripciones }) => {
+const InscripcionProyecto = ({ idProyecto, estado, inscripcion }) => {
   const [estadoInscripcion, setEstadoInscripcion] = useState('');
   const [crearInscripcion, { data, loading, error }] = useMutation(CREAR_INSCRIPCION);
   const { userData } = useUser();
 
   useEffect(() => {
-    if (userData && inscripciones) {
-      const flt = inscripciones.filter((ins) => ins.Student._id === userData._id);
+    if (userData && inscripcion) {
+      const flt = inscripcion.filter((el) => el.Student._id === userData._id);
       if (flt.length > 0) {
         setEstadoInscripcion(flt[0].Inscription_State);
       }
     }
-  }, [userData, inscripciones]);
+  }, [userData, inscripcion]);
 
   useEffect(() => {
     if (data) {

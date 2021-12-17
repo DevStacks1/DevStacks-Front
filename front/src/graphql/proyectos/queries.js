@@ -4,6 +4,7 @@ const PROYECTOS = gql`
   query Projects {
     Projects {
       _id
+      
       NameProject
       ProjectState
       Objectives {
@@ -13,6 +14,9 @@ const PROYECTOS = gql`
       Leader {
         _id
         Email
+        Name
+        Lastname
+        Identification
       }
       Inscriptions {
         Inscription_State
