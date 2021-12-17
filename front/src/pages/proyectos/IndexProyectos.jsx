@@ -72,7 +72,7 @@ const AccordionProyecto = ({ proyecto }) => {
           </div>
         </AccordionSummaryStyled>
         <AccordionDetailsStyled>
-        <PrivateComponent roleList={['ADMINISTRATOR']}>
+        <PrivateComponent roleList={['ADMINISTRATOR', 'LEADER']}>
             <div className='flex w-full justify-end'>
               <div onClick={() => {setShowDialog(true);}}>
                 <i className='mx-4 fas fa-pen  hover:text-white cursor-pointer'/>
@@ -90,7 +90,7 @@ const AccordionProyecto = ({ proyecto }) => {
             <InscripcionProyecto
               idProyecto={proyecto._id}
               estado={proyecto.ProjectState}
-              inscripciones={proyecto.Inscriptions}
+              inscripcion={proyecto.Inscriptions}
             />
         </PrivateComponent>
         </AccordionDetailsStyled>
@@ -144,7 +144,7 @@ const InscripcionProyecto = ({ idProyecto, estado, inscripcion }) => {
 
   return (
     <>
-      {estadoInscripcion !== '' ? (
+      {(estadoInscripcion !== '') ? (
         <span>you are already enrolled on this project - Status: {estadoInscripcion}</span>
       ) : (
       <button onClick={() => confirmarInscripcion()} disabled={estado === 'INACTIVE'} type='submit'
@@ -184,9 +184,10 @@ const FormEditProyecto = ({ _id , proyecto}) => {
 
   return (
     <div className='p-4'>
-      <h1 className='font-bold'>Modify project state</h1>
+      <h1 className='font-bold'>Modify project</h1>
       <form ref={form} onChange={updateFormData} onSubmit={submitForm}
         className='flex flex-col items-center'>
+
           <Input
           label='Nombre del Proyecto'
           type='text'

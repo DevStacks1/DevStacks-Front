@@ -9,8 +9,8 @@ const CREAR_INSCRIPCION = gql`
 `;
 
 const APROBAR_INSCRIPCION = gql`
-  mutation AcceptInscriptions($approveInscriptionId: String!) {
-    AcceptInscriptions (id: $approveInscriptionId) {
+  mutation ResponseInscription($responseInscriptionId: String!, $value:String!) {
+    ResponseInscription (id: $responseInscriptionId, value: $value) {
       _id
     }
   }

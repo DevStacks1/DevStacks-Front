@@ -14,6 +14,7 @@
     "graphql": "^16.1.0",
     "init": "^0.1.2",
     "jwt-decode": "^3.1.2",
+    "nanoid": "^3.1.30",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-loading": "^2.0.3",

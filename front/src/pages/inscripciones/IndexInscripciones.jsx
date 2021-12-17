@@ -5,6 +5,8 @@ import { GET_INSCRIPCIONES } from 'graphql/inscripciones/queries';
 import { APROBAR_INSCRIPCION } from 'graphql/inscripciones/mutaciones';
 import ButtonLoading from 'components/ButtonLoading';
 import { toast } from 'react-toastify';
+import { useUser } from 'context/userContext';
+import { nanoid } from 'nanoid';
 import {
   AccordionStyled,
   AccordionSummaryStyled,
@@ -14,6 +16,7 @@ import ReactLoading from 'react-loading';
 
 const IndexInscripciones = () => {
   const { data, loading, error, refetch } = useQuery(GET_INSCRIPCIONES);
+  const {userData} = useUser();
   useEffect(() => {
     if (error){
       toast.error("Error cargando inscripciones")
@@ -21,7 +24,7 @@ const IndexInscripciones = () => {
   }, [error])
 
   if (loading) return <div><ReactLoading type='spin' height={30} width={30} /></div>;
-  if (data){
+  if (data && userData){
     return (
       <PrivateRoute roleList={['ADMINISTRATOR', 'LEADER']}>
         <div className='p-10'>
@@ -29,16 +32,19 @@ const IndexInscripciones = () => {
           <div className='my-4'>
             <AccordionInscripcion
               titulo='Approved inscriptions'
-              data={data.Inscriptions.filter((ins) => ins.Inscription_State === 'ACCEPTED')}
+              data={(userData.Role === "LEADER") ? (data.Inscriptions.filter((ins) => ins.Inscription_State === 'ACCEPTED' && userData._id === ins.Project.Leader._id )):(
+                data.Inscriptions.filter((ins) => ins.Inscription_State === 'ACCEPTED'))}
             />
             <AccordionInscripcion
               titulo='Pending inscriptions'
-              data={data.Inscriptions.filter((ins) => ins.Inscription_State === 'PENDING')}
+              data={(userData.Role === "LEADER") ? (data.Inscriptions.filter((ins) => ins.Inscription_State === 'PENDING' && userData._id === ins.Project.Leader._id )):(
+                data.Inscriptions.filter((ins) => ins.Inscription_State === 'PENDING'))}
               refetch={refetch}
             />
             <AccordionInscripcion
               titulo='Rejected inscriptions'
-              data={data.Inscriptions.filter((ins) => ins.Inscription_State === 'REJECTED')}
+              data={(userData.Role === "LEADER") ? (data.Inscriptions.filter((ins) => ins.Inscription_State === 'REJECTED'&& userData._id === ins.Project.Leader._id )):(
+                data.Inscriptions.filter((ins) => ins.Inscription_State === 'REJECTED'))}
             />
           </div>
         </div>
@@ -50,7 +56,7 @@ const IndexInscripciones = () => {
 
 const AccordionInscripcion = ({ data, titulo, refetch = () => {} }) => {
   return (
-    <AccordionStyled>
+    <AccordionStyled >
       <AccordionSummaryStyled>
         {titulo} ({data.length})
       </AccordionSummaryStyled>
@@ -58,7 +64,7 @@ const AccordionInscripcion = ({ data, titulo, refetch = () => {} }) => {
         <div className='flex'>
           {data &&
             data.map((inscripcion) => {
-              return <Inscripcion inscripcion={inscripcion} refetch={refetch} />;
+              return <Inscripcion inscripcion={inscripcion} refetch={refetch} key={nanoid()}/>;
             })}
         </div>
       </AccordionDetailsStyled>
@@ -71,17 +77,18 @@ const Inscripcion = ({ inscripcion, refetch }) => {
 
   useEffect(() => {
     if (data) {
-      toast.success('Inscripcion aprobada con exito');
+      toast.success('Inscripcion actualizada con exito');
       refetch();
     }else if (error) {
-      toast.error('Error aprobando la inscripcion');
+      toast.error('Error actualizando la inscripcion');
     }
   }, [data, error ,refetch]);
 
-  const cambiarEstadoInscripcion = () => {
+  const cambiarEstadoInscripcion = (res) => {
     aprobarInscripcion({
       variables: {
-        ApproveInscriptionId: inscripcion._id,
+        responseInscriptionId: inscripcion._id,
+        value: res
       },
     });
   };
@@ -91,15 +98,29 @@ const Inscripcion = ({ inscripcion, refetch }) => {
       <span>{inscripcion.Project.NameProject}</span>
       <span>{inscripcion.Student.Name}</span>
       <span>{inscripcion.Inscription_State}</span>
-      {inscripcion.Inscription_State === 'PENDING' && (
+      {inscripcion.Inscription_State === 'PENDING' && ( <div className='flex flex-col'>
         <ButtonLoading
-          onClick={() => {
-            cambiarEstadoInscripcion();
+          onClick={(e) => {
+            cambiarEstadoInscripcion(e.target.value);
           }}
-          text='Approve inscription'
+          text='Approve'
           loading={loading}
           disabled={false}
+          color="green"
+          value ="ACCEPTED"
         />
+        <ButtonLoading
+          onClick={(e) => {
+            cambiarEstadoInscripcion(e.target.value);
+          }}
+          text='Reject'
+          loading={loading}
+          disabled={false}
+          color="red"
+          value="REJECTED"
+        />
+      </div>
+        
       )}
     </div>
   );
