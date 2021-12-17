@@ -30,10 +30,10 @@ const Logout = () => {
   };
   return (
     <li onClick={() => deleteToken()}>
-      <NavLink to='/auth/login' className='sidebar-route text-red-700'>
-        <div className='flex items-center'>
+      <NavLink to='/auth/login' className='sidebar-route'>
+        <div className='flex items-center text-red-600'>
           <i className='fas fa-sign-out-alt' />
-          <span className='text-sm  ml-2'>Cerrar Sesión</span>
+          <span className='font-bold text-black text-sm  ml-2'>Cerrar Sesión</span>
         </div>
       </NavLink>
     </li>
@@ -44,7 +44,7 @@ const Logo = () => {
   return (
     <div className='py-3 w-full flex flex-col items-center justify-center'>
       <img src={logo2} alt='Logo' className='h-full' />
-      <span className='my-2 text-xl font-bold text-center'>Administración de proyectos</span>
+      <span className='my-2 text-lg font-bold text-center'>Administración de proyectos</span>
     </div>
   );
 };
@@ -53,22 +53,23 @@ const Sidebar = () => {
   const [open, setOpen] = useState(true);
   return (
     <div className='flex flex-col md:flex-row flex-no-wrap md:h-full'>
-      {/* Sidebar starts */}
+    {/* Sidebar starts */}
 
-      <div className='sidebar hidden md:flex'>
-        <div className='px-8'>
-          <Logo />
-          <SidebarLinks />
-        </div>
+    <div className='sidebar hidden md:flex'>
+      <div className='px-8'>
+        <Logo />
+        <SidebarLinks />
       </div>
-      <div className='flex md:hidden w-full justify-between bg-gray-800 p-2 text-white'>
-        <i className={`fas fa-${open ? 'times' : 'bars'}`} onClick={() => setOpen(!open)} />
-        <i className='fas fa-home' />
-      </div>
-      {open && <ResponsiveSidebar />}
-      {/* Sidebar ends */}
     </div>
-  );
+    <div className='flex md:hidden w-full justify-between bg-black p-2 text-white'>
+      <button type='button' onClick={() => setOpen(!open)}>
+        <i className={`fas fa-${open ? 'hamburger' : 'bars'}`}/>
+      </button>
+    </div>
+    {open && <ResponsiveSidebar />}
+    {/* Sidebar ends */}
+  </div>
+);
 };
 
 const ResponsiveSidebar = () => {
@@ -94,8 +95,8 @@ const SidebarRoute = ({ to, title, icon }) => {
         to={to}
         className={({ isActive }) =>
           isActive
-            ? 'sidebar-route text-white bg-indigo-700'
-            : 'sidebar-route text-gray-900 hover:text-white hover:bg-indigo-400'
+            ? 'sidebar-route border-t-2 border-b-2 font-extrabold border-white text-white'
+            : 'sidebar-route font-bold text-gray-900 hover:text-black hover:bg-green-700'
         }
       >
         <div className='flex items-center'>
