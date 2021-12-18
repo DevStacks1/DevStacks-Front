@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 const EDITAR_OBSERVACION = gql `
-    mutation editarObservation($_id: String!, $observations: String!) {
-        editarObservation(_id: $_id, Observations: $observations) {
+    mutation editarObservation($_id: String!, $Observations: String!) {
+        editarObservation(_id: $_id, Observations: $Observations) {
         _id
         Observations
         }

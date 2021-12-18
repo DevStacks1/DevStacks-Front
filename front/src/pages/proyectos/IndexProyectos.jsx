@@ -19,6 +19,8 @@ import {
 } from 'components/Accordion';
 import ReactLoading from 'react-loading';
 import { FILTRAR_AVANCES } from 'graphql/avance/queries';
+import { EDITAR_OBSERVACION } from 'graphql/avance/mutations';
+import { nanoid } from 'nanoid';
 
 const IndexProyectos = () => {
   const { data: queryData, loading, error } = useQuery(PROYECTOS);
@@ -47,7 +49,7 @@ const IndexProyectos = () => {
           </div>
         </PrivateComponent>
         {userData.Role === 'LEADER' ? (queryData.Projects.map((proyect) => {
-          return (<div>
+          return (<div key={nanoid()} >
             {(userData._id === proyect.Leader._id ) ? (<AccordionProyecto proyecto={proyect} key={proyect._id} />):(
               <></>)}
           </div>)
@@ -72,10 +74,7 @@ const AccordionProyecto = ({ proyecto }) => {
     if (errorAvances){
       toast.error("error cargando avances")
     }
-    if (dataAvances){
-      console.log("avances", dataAvances.filtrarAvance);
-    }
-  }, [errorAvances, dataAvances])
+  }, [errorAvances])
 
   if (loading){return <div>Loading...</div> };
 
@@ -102,7 +101,7 @@ const AccordionProyecto = ({ proyecto }) => {
           <div>Documento: {proyecto.Leader.Identification}</div>
           <div className='flex'>
             {proyecto.Objectives.map((objetivo) => {
-              return <Objetivo tipo={objetivo.Type} descripcion={objetivo.Description} />;
+              return <Objetivo tipo={objetivo.Type} descripcion={objetivo.Description} key={nanoid()} />;
             })}
           </div>
         <PrivateComponent roleList={['STUDENT']}>
@@ -115,8 +114,8 @@ const AccordionProyecto = ({ proyecto }) => {
         </AccordionDetailsStyled>
         <AccordionDetailsStyled>
         {dataAvances ? ( dataAvances.filtrarAvance.map ((avance)=>{
-          return (<div className='flex flex-col bg-white'>
-            <span>Progress create by {avance.CreatedBy.Name +" "+ avance.CreatedBy.Lastname}</span>
+          return (<div className='flex flex-col bg-white' key={nanoid()}>
+            <span>Avance creado por {avance.CreatedBy.Name +" "+ avance.CreatedBy.Lastname}</span>
             <p> {avance.Observations} </p>
           </div>)
         })) : ( <div> there is no progress</div> )}
@@ -126,7 +125,7 @@ const AccordionProyecto = ({ proyecto }) => {
       
       <Dialog open={showDialog} 
         onClose={() => {setShowDialog(false);}}>
-          <FormEditProyecto _id={proyecto._id} proyecto={proyecto} />
+          <FormEditProyecto _id={proyecto._id} proyecto={proyecto} avance={dataAvances.filtrarAvance[0]} key={nanoid()} />
       </Dialog>
     </div>
   );
@@ -184,25 +183,33 @@ const InscripcionProyecto = ({ idProyecto, estado, inscripcion }) => {
   );
 };
 
-const FormEditProyecto = ({ _id , proyecto}) => {
+const FormEditProyecto = ({ _id , proyecto, avance}) => {
   const { form, formData, updateFormData } = useFormData();
+  const [observations, setObservations] = useState(avance.Observations)
   const [editarProyecto, { data: dataMutation, loading, error }] = useMutation(EDITAR_PROYECTO);
+  const [editarObservacion, { data: dataObservacion, loading:loadingObservacion, error:errorObservacion }] = useMutation(EDITAR_OBSERVACION);
 
   const submitForm = (e) => {
     e.preventDefault();
     formData.Objectives = Object.values(formData.objetivos);
     delete formData.objetivos
     formData.Budget = parseFloat(formData.Budget);
+    const obs = formData.Observations;
+    console.log("obs", obs);
+    delete formData.Observations;
     editarProyecto({
       variables: {
         _id,
         Fields: formData,
       },
     });
+    editarObservacion({variables:{
+      _id: avance._id,
+      Observations: obs
+    }});
   };
 
   useEffect(() => {
-    console.log('data mutation', dataMutation);
     if (dataMutation){
       toast.success("Proyecto editado con exito");
     }else if (error){
@@ -210,18 +217,18 @@ const FormEditProyecto = ({ _id , proyecto}) => {
     }
   }, [dataMutation, error]);
 
+
   return (
     <div className='p-4'>
       <h1 className='font-bold'>Modify project</h1>
       <form ref={form} onChange={updateFormData} onSubmit={submitForm}
         className='flex flex-col items-center'>
-
           <Input
-          label='Nombre del Proyecto'
-          type='text'
-          name='NameProject'
-          defaultValue={proyecto.NameProject}
-          required={true}
+            label='Nombre del Proyecto'
+            type='text'
+            name='NameProject'
+            defaultValue={proyecto.NameProject}
+            required={true}
           />
           <Input
             label='Presupuesto'
@@ -256,6 +263,13 @@ const FormEditProyecto = ({ _id , proyecto}) => {
               </div>
             )
           })}
+
+          <label htmlFor='Observations' className='flex flex-col my-3'>
+          <span class='font-bold text-gray-500'>Observaciones</span>
+            <textarea name="Observations" placeholder='Observaciones' cols="25" rows="5" 
+              onChange={(e)=>{setObservations(e.target.value) }} value={observations}/>
+          </label>
+
           <button onClick={() => {}} disabled={Object.keys(formData).length === 0} type='submit'
             className='bg-indigo-700 text-white font-bold text-lg py-3 px-6 
             rounded-xl hover:bg-indigo-500 shadow-md my-2 disabled:opacity-50 disabled:bg-gray-700'>
