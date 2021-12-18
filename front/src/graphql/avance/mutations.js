@@ -1,16 +1,12 @@
 import { gql } from "@apollo/client";
 
-const FILTRAR_AVANCES = gql `
-    query filtrarAvance($ProjectId: String!) {
-        filtrarAvance(ProjectId: $ProjectId) {
+const EDITAR_OBSERVACION = gql `
+    mutation editarObservation($_id: String!, $observations: String!) {
+        editarObservation(_id: $_id, Observations: $observations) {
         _id
-        Date
-        Description
-        CreatedBy {
-            Name
-            Lastname
-        }
+        Observations
         }
     }
 `
-export {FILTRAR_AVANCES}
+
+export {EDITAR_OBSERVACION}

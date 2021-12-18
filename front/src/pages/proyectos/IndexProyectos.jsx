@@ -18,7 +18,7 @@ import {
   AccordionDetailsStyled,
 } from 'components/Accordion';
 import ReactLoading from 'react-loading';
-import { FILTRAR_AVANCES } from 'graphql/avance/mutations';
+import { FILTRAR_AVANCES } from 'graphql/avance/queries';
 
 const IndexProyectos = () => {
   const { data: queryData, loading, error } = useQuery(PROYECTOS);
@@ -117,7 +117,7 @@ const AccordionProyecto = ({ proyecto }) => {
         {dataAvances ? ( dataAvances.filtrarAvance.map ((avance)=>{
           return (<div className='flex flex-col bg-white'>
             <span>Progress create by {avance.CreatedBy.Name +" "+ avance.CreatedBy.Lastname}</span>
-            <p> {avance.Description} </p>
+            <p> {avance.Observations} </p>
           </div>)
         })) : ( <div> there is no progress</div> )}
 
