@@ -3,22 +3,20 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_USUARIO } from 'graphql/usuarios/queries';
 import Input from 'components/Input';
-import ButtonLoading from 'components/ButtonLoading';
 import useFormData from 'hooks/useFormData';
 import { toast } from 'react-toastify';
 import { EDITAR_USUARIO } from 'graphql/usuarios/mutations';
 import DropDown from 'components/Dropdown';
 import { Enum_EstadoUsuario } from 'utils/enums';
+import ReactLoading from 'react-loading';
+import { useUser } from 'context/userContext';
 
 const EditarUsuario = () => {
   const { form, formData, updateFormData } = useFormData(null);
   const { _id } = useParams();
+  const {userData} = useUser()
 
-  const {
-    data: queryData,
-    error: queryError,
-    loading: queryLoading,
-  } = useQuery(GET_USUARIO, {
+  const {data: queryData,error: queryError,loading: queryLoading} = useQuery(GET_USUARIO, {
     variables: { _id },
   });
 
@@ -28,7 +26,6 @@ const EditarUsuario = () => {
 
   const submitForm = (e) => {
     e.preventDefault();
-    delete formData.rol;
     editarUsuario({
       variables: { _id, ...formData },
     });
@@ -50,14 +47,14 @@ const EditarUsuario = () => {
     }
   }, [queryError, mutationError]);
 
-  if (queryLoading) return <div>Cargando....</div>;
+  if (queryLoading) return <div>Loading....</div>;
 
   return (
     <div className='flew flex-col w-full h-full items-center justify-center p-10'>
       <Link to='/usuarios'>
         <i className='fas fa-arrow-left text-gray-600 cursor-pointer font-bold text-xl hover:text-gray-900' />
       </Link>
-      <h1 className='m-4 text-3xl text-gray-800 font-bold text-center'>Editar Usuario</h1>
+      <h1 className='m-4 text-3xl text-gray-800 font-bold text-center'>EDIT USER</h1>
       <form
         onSubmit={submitForm}
         onChange={updateFormData}
@@ -67,44 +64,48 @@ const EditarUsuario = () => {
         <Input
           label='Nombre de la persona:'
           type='text'
-          name='nombre'
-          defaultValue={queryData.Usuario.nombre}
+          name='Name'
+          defaultValue={queryData.User.Name}
           required={true}
+          disabled = {userData.Role === 'LEADER'}
         />
         <Input
           label='Apellido de la persona:'
           type='text'
-          name='apellido'
-          defaultValue={queryData.Usuario.apellido}
+          name='Lastname'
+          defaultValue={queryData.User.Lastname}
           required={true}
+          disabled = {userData.Role === 'LEADER'}
         />
         <Input
           label='Correo de la persona:'
           type='email'
-          name='correo'
-          defaultValue={queryData.Usuario.correo}
+          name='Email'
+          defaultValue={queryData.User.Email}
           required={true}
+          disabled = {userData.Role === 'LEADER'}
         />
         <Input
           label='Identificación de la persona:'
           type='text'
-          name='identificacion'
-          defaultValue={queryData.Usuario.identificacion}
+          name='Identification'
+          defaultValue={queryData.User.Identification}
           required={true}
+          disabled = {userData.Role === 'LEADER'}
         />
         <DropDown
           label='Estado de la persona:'
-          name='estado'
-          defaultValue={queryData.Usuario.estado}
+          name='State'
+          defaultValue={queryData.User.State}
           required={true}
           options={Enum_EstadoUsuario}
         />
-        <span>Rol del usuario: {queryData.Usuario.rol}</span>
-        <ButtonLoading
-          disabled={Object.keys(formData).length === 0}
-          loading={mutationLoading}
-          text='Confirmar'
-        />
+        <span>Rol del usuario: {queryData.User.Role}</span>
+        <button disabled={Object.keys(formData).length === 0} type='submit'
+        className='bg-indigo-700 text-white font-bold text-lg py-3 px-6 
+        rounded-xl hover:bg-indigo-500 shadow-md my-2 disabled:opacity-50 disabled:bg-gray-700' >
+          {mutationLoading ? <ReactLoading type='spin' height={30} width={30} /> : <div> CONFIRM </div>}
+        </button>
       </form>
     </div>
   );

@@ -1,13 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 .sidebar {
-  @apply w-64 bg-gray-200 shadow flex-col justify-between;
+  @apply w-64 bg-green-300 shadow flex-col justify-between;
 }
 
 .sidebar-route {
-  @apply rounded-md flex w-full justify-between cursor-pointer items-center m-3 p-3;
+  @apply  rounded-md flex w-full justify-between cursor-pointer items-center m-3 p-3;
 }
 
 .input {

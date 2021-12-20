@@ -1,16 +1,16 @@
 import { gql } from '@apollo/client';
 
 const CREAR_INSCRIPCION = gql`
-  mutation Mutation($proyecto: String!, $estudiante: String!) {
-    crearInscripcion(proyecto: $proyecto, estudiante: $estudiante) {
+  mutation CreateInscription($Project: String!, $Student: String!) {
+    CreateInscription(Project: $Project, Student: $Student) {
       _id
     }
   }
 `;
 
 const APROBAR_INSCRIPCION = gql`
-  mutation AprobarInscripcion($aprobarInscripcionId: String!) {
-    aprobarInscripcion(id: $aprobarInscripcionId) {
+  mutation ResponseInscription($responseInscriptionId: String!, $value:String!) {
+    ResponseInscription (id: $responseInscriptionId, value: $value) {
       _id
     }
   }
