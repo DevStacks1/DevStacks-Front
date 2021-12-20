@@ -69,15 +69,30 @@ const IndexProyectos = () => {
 const AccordionProyecto = ({ proyecto }) => {
   const [showDialog, setShowDialog] = useState(false);
   const {data:dataAvances, loading, error:errorAvances}  = useQuery(FILTRAR_AVANCES, {variables:{ProjectId:proyecto._id}});
-  
+  const {userData} = useUser();
+  //const [EstadoInscriptionUser, setEstadoInscriptionUser] = useState('')
+  var EstadoInscriptionUser
+
   useEffect(() => {
     if (errorAvances){
       toast.error("error cargando avances")
     }
   }, [errorAvances])
 
-  if (loading){return <div>Loading...</div> };
+  // useEffect(() => {
+  //   if( EstadoInscriptionUser){
+  //     console.log("qwewr", EstadoInscriptionUser);
+  //   }
+  // })
 
+  if (loading){return <div>Loading...</div> };
+  
+  proyecto.Inscriptions.map ((ins)=>{
+    if (ins.Student._id === userData._id){
+      EstadoInscriptionUser = ins.Inscription_State
+      return EstadoInscriptionUser;
+    }return null;
+  })
   return (
     <div>
       <AccordionStyled>
@@ -113,12 +128,15 @@ const AccordionProyecto = ({ proyecto }) => {
         </PrivateComponent>
         </AccordionDetailsStyled>
         <AccordionDetailsStyled>
-        {dataAvances ? ( dataAvances.filtrarAvance.map ((avance)=>{
+          
+        {  
+        (dataAvances && EstadoInscriptionUser === "ACCEPTED" ? ( dataAvances.filtrarAvance.map ((avance)=>{
           return (<div className='flex flex-col bg-white' key={nanoid()}>
             <span>Avance creado por {avance.CreatedBy.Name +" "+ avance.CreatedBy.Lastname}</span>
             <p> {avance.Observations} </p>
           </div>)
-        })) : ( <div> there is no progress</div> )}
+        })) : ( <></> ))
+        }
 
         </AccordionDetailsStyled>
       </AccordionStyled>
@@ -187,7 +205,7 @@ const FormEditProyecto = ({ _id , proyecto, avance}) => {
   const { form, formData, updateFormData } = useFormData();
   const [observations, setObservations] = useState(avance.Observations)
   const [editarProyecto, { data: dataMutation, loading, error }] = useMutation(EDITAR_PROYECTO);
-  const [editarObservacion, { data: dataObservacion, loading:loadingObservacion, error:errorObservacion }] = useMutation(EDITAR_OBSERVACION);
+  const [editarObservacion] = useMutation(EDITAR_OBSERVACION);
 
   const submitForm = (e) => {
     e.preventDefault();
