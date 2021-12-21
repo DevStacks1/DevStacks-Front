@@ -8,5 +8,13 @@ const EDITAR_OBSERVACION = gql `
         }
     }
 `
+const CREAR_AVANCE = gql `
+    mutation crearAvance($date: Date!, $observations: String!, $project: String!, $createdBy: String!) {
+        crearAvance(Date: $date, Observations: $observations, Project: $project, CreatedBy: $createdBy) {
+        _id
+        Observations
+        }
+    }
+`
 
-export {EDITAR_OBSERVACION}
+export {EDITAR_OBSERVACION, CREAR_AVANCE}

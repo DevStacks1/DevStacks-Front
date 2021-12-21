@@ -68,22 +68,14 @@ const IndexProyectos = () => {
 
 const AccordionProyecto = ({ proyecto }) => {
   const [showDialog, setShowDialog] = useState(false);
-  const {data:dataAvances, loading, error:errorAvances}  = useQuery(FILTRAR_AVANCES, {variables:{ProjectId:proyecto._id}});
+  const {data:dataAvances, loading}  = useQuery(FILTRAR_AVANCES, {variables:{ProjectId:proyecto._id}});
   const {userData} = useUser();
-  //const [EstadoInscriptionUser, setEstadoInscriptionUser] = useState('')
   var EstadoInscriptionUser
 
-  useEffect(() => {
-    if (errorAvances){
-      toast.error("error cargando avances")
-    }
-  }, [errorAvances])
 
-  // useEffect(() => {
-  //   if( EstadoInscriptionUser){
-  //     console.log("qwewr", EstadoInscriptionUser);
-  //   }
-  // })
+  useEffect(() => {
+    console.log("puta vida", dataAvances);
+  }, [dataAvances])
 
   if (loading){return <div>Loading...</div> };
   
@@ -143,7 +135,8 @@ const AccordionProyecto = ({ proyecto }) => {
       
       <Dialog open={showDialog} 
         onClose={() => {setShowDialog(false);}}>
-          <FormEditProyecto _id={proyecto._id} proyecto={proyecto} avance={dataAvances.filtrarAvance[0]} key={nanoid()} />
+          <FormEditProyecto _id={proyecto._id} proyecto={proyecto} 
+            avance={dataAvances.filtrarAvance[0] ? (dataAvances.filtrarAvance[0]):(' ')} key={nanoid()} />
       </Dialog>
     </div>
   );

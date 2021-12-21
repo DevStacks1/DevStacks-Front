@@ -12,16 +12,13 @@ import { useObj } from 'context/objContext';
 import { CREAR_PROYECTO } from 'graphql/proyectos/mutations';
 import { toast } from 'react-toastify';
 import ReactLoading from 'react-loading';
+import { CREAR_AVANCE } from 'graphql/avance/mutations';
 
 const NuevoProyecto = () => {
   const { form, formData, updateFormData } = useFormData();
   const [listaUsuarios, setListaUsuarios] = useState({});
-  const { data, loading, error } = useQuery(GET_USUARIOS, {
-    variables: {
-      filtro: { Role: 'LEADER', State: 'AUTHORIZED' },
-    },
-  });
-
+  const { data, loading, error } = useQuery(GET_USUARIOS, {variables: {filtro: { Role: 'LEADER', State: 'AUTHORIZED' },},});
+  const [crearAvance] = useMutation (CREAR_AVANCE);
   const [crearProyecto, { data: mutationData, loading: mutationLoading, error: mutationError }] =
     useMutation(CREAR_PROYECTO);
 
@@ -46,15 +43,26 @@ const NuevoProyecto = () => {
     }
   }, [mutationData, mutationError]);
 
+  useEffect(() => {
+    if (mutationData){
+      console.log(formData.Leader);
+      crearAvance({variables:{
+        date:formData.Initial_Date,
+        observations:' ',
+        project: mutationData.CreateProject._id,
+        createdBy:formData.Leader
+      }});
+    }
+  }, [mutationData, crearAvance, formData])
+
   const submitForm = (e) => {
     e.preventDefault();
     formData.Objectives = Object.values(formData.objetivos);
     formData.Budget = parseFloat(formData.Budget);
-
     crearProyecto({
       variables: formData,
-    });
-  };
+    })
+    }
 
   if (loading) return <div>...Loading</div>;
 
