@@ -1,10 +1,10 @@
 FROM node:14
 
-WORKDIR /docker-app
+WORKDIR /usr/src
 
-COPY ["package.json", "yarn.lock", "/docker-app/"]
+COPY ["./package.json", "./yarn.lock", "/usr/src/"]
 
-COPY ./ /docker-app/
+COPY ./ /usr/src/
 
 RUN yarn install
 
